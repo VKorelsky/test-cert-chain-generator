@@ -2,6 +2,7 @@
 
 ROOT_CA_DIR="./root_ca"
 INT_CA_DIR="./intermediate_ca"
+LEAF_DIR="./leaf_config"
 
 generateRootCert() {
   openssl ecparam -name secp384r1 -genkey -noout -out $ROOT_CA_DIR/root.key;
@@ -13,24 +14,24 @@ generateRootCert() {
 
 generateIntermediateCert(){
   openssl ecparam -name prime256v1 -genkey -noout -out $INT_CA_DIR/intermediate.key;
-  openssl req -new -key $INT_CA_DIR/intermediate.key -out $INT_CA_DIR/intermediate.csr -config $INT_CA_DIR/intermediate_req.config;
-  openssl ca -in $INT_CA_DIR/intermediate.csr -out $INT_CA_DIR/intermediate.pem -config $ROOT_CA_DIR/root.config -extfile $ROOT_CA_DIR/ca.ext -days 730;
+  openssl req --verbose -new -key $INT_CA_DIR/intermediate.key -out $INT_CA_DIR/intermediate.csr -config $INT_CA_DIR/intermediate_req.config;
+  openssl ca --verbose -in $INT_CA_DIR/intermediate.csr -out $INT_CA_DIR/intermediate.pem -config $ROOT_CA_DIR/root.config -extfile $ROOT_CA_DIR/ca.ext -days 730;
 
   rm -f $INT_CA_DIR/intermediate.csr;
 }
 
 generateLeafCert(){
-  openssl ecparam -name prime256v1 -genkey -noout -out leaf.key;
-  openssl req -new -key leaf.key -out leaf.csr -config leaf_req.config;
-  openssl ca -in leaf.csr -out leaf.pem -config intermediate.config -days 365;
+#  openssl ecparam -name prime256v1 -genkey -noout -out $LEAF_DIR/leaf.key;
+#  openssl req -new -key $LEAF_DIR/leaf.key -out $LEAF_DIR/leaf.csr -config $LEAF_DIR/leaf_req.config;
+  openssl ca -in $LEAF_DIR/leaf.csr -out $LEAF_DIR/leaf.pem -config $INT_CA_DIR/intermediate.config -days 365;
 
-  rm -f leaf.csr;
+#  rm -f $LEAF_DIR/leaf.csr;
 }
 
 execute() {
 #  generateRootCert;
-  generateIntermediateCert;
-#  generateLeafCert;
+#  generateIntermediateCert;
+  generateLeafCert;
 }
 
 execute
