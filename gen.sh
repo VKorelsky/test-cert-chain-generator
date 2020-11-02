@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ROOT_CA_DIR="./root_ca"
+INT_CA_DIR="./intermediate_ca"
 
 generateRootCert() {
   openssl ecparam -name secp384r1 -genkey -noout -out $ROOT_CA_DIR/root.key;
@@ -11,11 +12,11 @@ generateRootCert() {
 }
 
 generateIntermediateCert(){
-  openssl ecparam -name prime256v1 -genkey -noout -out intermediate.key;
-  openssl req -new -key intermediate.key -out intermediate.csr -config intermediate_req.config;
-  openssl ca -in intermediate.csr -out intermediate.pem -config root.config -extfile ca.ext -days 730;
+  openssl ecparam -name prime256v1 -genkey -noout -out $INT_CA_DIR/intermediate.key;
+  openssl req -new -key $INT_CA_DIR/intermediate.key -out $INT_CA_DIR/intermediate.csr -config $INT_CA_DIR/intermediate_req.config;
+  openssl ca -in $INT_CA_DIR/intermediate.csr -out $INT_CA_DIR/intermediate.pem -config $ROOT_CA_DIR/root.config -extfile $ROOT_CA_DIR/ca.ext -days 730;
 
-  rm -f intermediate.csr;
+  rm -f $INT_CA_DIR/intermediate.csr;
 }
 
 generateLeafCert(){
@@ -27,8 +28,8 @@ generateLeafCert(){
 }
 
 execute() {
-  generateRootCert;
-#  generateIntermediateCert;
+#  generateRootCert;
+  generateIntermediateCert;
 #  generateLeafCert;
 }
 
