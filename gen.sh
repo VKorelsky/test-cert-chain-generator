@@ -37,7 +37,7 @@ generateLeafCert(){
 	echo "generating fresh leaf";
   openssl ecparam -name prime256v1 -genkey -noout -out $LEAF_DIR/leaf.key;
   openssl req -new -key $LEAF_DIR/leaf.key -out $LEAF_DIR/leaf.csr -config $LEAF_DIR/leaf_req.config;
-  openssl ca -in $LEAF_DIR/leaf.csr -out $LEAF_DIR/leaf.pem -config $INT_CA_DIR/intermediate.config -days 365;
+  openssl ca -in $LEAF_DIR/leaf.csr -extfile $LEAF_DIR/leaf_req_ext.config -extensions v3_req -out $LEAF_DIR/leaf.pem -config $INT_CA_DIR/intermediate.config -days 365;
 	# convert to newer pem format https://github.com/auth0/java-jwt/issues/270
   openssl pkcs8 -topk8 -inform pem -in $LEAF_DIR/leaf.key -outform pem -nocrypt -out $LEAF_DIR/leaf.pem
 
