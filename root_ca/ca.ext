@@ -1,3 +1,4 @@
 [ default ]
-basicConstraints = critical,CA:true     # recommended to be marked critical. required for a ca
-keyUsage         = critical,keyCertSign # required to be marked critical. required for signing certs
+basicConstraints      = critical,CA:true     # recommended to be marked critical. required for a ca
+keyUsage              = critical,keyCertSign,cRLSign # required to be marked critical. required for signing certs and CRLs
+crlDistributionPoints = URI:http://localhost:8007/root.crl.pem
