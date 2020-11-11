@@ -84,11 +84,7 @@ generateChain(){
 	[ $2 == "expire-leaf" ] && leafFlags="$FLAGS_EXPIRED" || leafFlags="$FLAGS_VALID_FOR_100_Y";
 	generateLeafCert "$leafFlags $GLOBAL_CA_FLAGS" leaf_ext.config "http://localhost:8007/$1/crls/intermediate.crl.pem";
 	
-	if [ $3 == "revoke-root" ]
-  then
-    echo "Revoking root certificate"
-    openssl ca -config $ROOT_CA_DIR/root.config -revoke $OUTPUT_CERTS_PEM_DIR/root.pem
-  elif [ $3 == "revoke-intermediate" ]
+	if [ $3 == "revoke-intermediate" ]
   then
     echo "Revoking intermediate certificate"
     openssl ca -config $ROOT_CA_DIR/root.config -revoke $OUTPUT_CERTS_PEM_DIR/intermediate.pem
@@ -116,7 +112,6 @@ generateChainValidationTestCertificates(){
 	echo "generating certificates for testing certificate validation";
   
 	generateChain "root_expired" "expire-root" "revoke-none";
-  generateChain "root_revoked" "expire-none" "revoke-root";
   generateChain "root_unrelated" "expire-none" "revoke-none";
   generateChain "intermediate_expired" "expire-intermediate" "revoke-none";
   generateChain "intermediate_revoked" "expire-none" "revoke-intermediate";
